@@ -1,0 +1,83 @@
+{% extends "commerce-addons/_layout" %}
+{% set selectedSidebarNavItem = 'addons' %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <a href="{{ url('commerce-addons/new') }}"
+           class="btn submit add icon">{{ 'New Addon'|t('commerce-addons') }}</a>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    {# <h2>{{ "Discounts"|t('commerce-addons') }}</h2> #}
+
+    <div id="no-addons"{% if addons|length %} class="hidden"{% endif %}>
+        <p>{{ "No addons exist yet."|t('commerce-addons') }}</p>
+    </div>
+
+    {% if addons|length %}
+        <table id="addons" class="data fullwidth collapsible">
+            <thead>
+            <tr>
+                <th scope="col">{{ "Name"|t('commerce-addons') }}</th>
+                {# <th scope="col">{{ "Code"|t('commerce-addons') }}</th> #}
+                <th scope="col">{{ "Duration"|t('commerce-addons') }}</th>
+                {# <th scope="col">{{ "Times Used"|t('commerce-addons') }}</th> #}
+                {# <th scope="col">{{ "Stops Processing?"|t('commerce-addons') }}</th> #}
+                <td class="thin"></td>
+                <td class="thin"></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for addon in addons %}
+                <tr data-id="{{ addon.id }}" data-name="{{ addon.name }}">
+                    <th scope="row" data-title="{{ 'Name'|t('commerce-addons') }}">
+                        {% if addon.enabled %}
+                            <div class="status enabled"></div>
+                        {% else %}
+                            <div class="status"></div>
+                        {% endif %}
+                        <a href="{{ url('commerce-addons/'~addon.id) }}">{{ addon.name }}</a>
+                    </th>
+                    {# <td data-title="{{ 'Code'|t('commerce-addons') }}"
+                        class="code">{{ addon.code }}</td> #}
+                    <td data-title="{{ 'Duration'|t('commerce-addons') }}">
+                        {{ (addon.dateFrom ? addon.dateFrom|datetime('short'): '∞') }}
+                        -
+                        {{ (addon.dateTo ? addon.dateTo|datetime('short') : '∞') }}
+                    </td>
+                    {# <td data-title="{{ 'Times Coupon Used'|t('commerce-addons') }}">{{ addon.totalUses }}</td> #}
+                    {# <td data-title="{{ 'Can Stop Processing?'|t('commerce-addons') }}">
+                        {% if addon.stopProcessing %}
+                          <span data-icon="check" title="{{ 'Yes'|t('commerce-addons') }}"></span>
+                        {% endif %}
+                    </td> #}
+                    <td class="thin">
+                        <a class="move icon disabled"
+                           title="{{ 'Delete'|t('commerce-addons') }}"
+                           role="button"></a>
+                    </td>
+                    <td class="thin"><a class="delete icon"
+                                        title="{{ 'Delete'|t('commerce-addons') }}"
+                                        role="button"></a></td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+      tableSelector: '#addons',
+      noObjectsSelector: '#no-addons',
+      deleteAction: 'commerce-addons/default/delete',
+      sortable: true,
+      reorderAction: 'commerce-addons/default/reorder',
+      reorderSuccessMessage: Craft.t('commerce-addons', 'Addons reordered.') ,
+      reorderFailMessage:    Craft.t('commerce-addons', 'Couldn’t reorder addons.')
+    });
+{% endjs %}

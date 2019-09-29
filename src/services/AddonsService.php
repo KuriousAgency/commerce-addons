@@ -218,11 +218,6 @@ class AddonsService extends Component
             return false;
         }
 
-        // can't match something not promotable
-        if (!$lineItem->purchasable->getIsPromotable()) {
-            return false;
-        }
-
         if ($discount->getPurchasableIds() && !$discount->allPurchasables) {
             $purchasableId = $lineItem->purchasableId;
             if (!in_array($purchasableId, $discount->getPurchasableIds(), true)) {
